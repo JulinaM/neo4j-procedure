@@ -38,4 +38,24 @@ public class JoinTest
             assertThat( result, equalTo( "Hello,World" ) );
         }
     }
+
+    @Test
+    public void shouldAllowIndexingAndFindingANodes() throws Throwable
+    {
+        // This is in a try-block, to make sure we close the driver after the test
+        try( Driver driver = GraphDatabase
+                .driver( neo4j.boltURI() , Config.build().withEncryptionLevel( Config.EncryptionLevel.NONE ).toConfig() ) )
+        {
+            // Given
+            Session session = driver.session();
+
+            // When
+            String result = session.run(
+//                    "RETURN example.average([{id_225:{timestamp : 1541187380 , memory : 920004.0}, id_104:{timestamp :1542606110 , memory : 1309404.0}}])AS result")
+            "RETURN example.average([{'id_225':\"[timestamp = 1541187380 , memory = 920004.0]\",\"id_104\":\"[timestamp = 1542606110 , memory = 1309404.0]\"}])AS result")
+                    .single().get("result").asString();
+            // Then
+            assertThat( result, equalTo( "1114704.0" ) );
+        }
+    }
 }
