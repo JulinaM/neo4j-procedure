@@ -21,8 +21,9 @@ public class Aggregator {
 
         List<Double> result = new ArrayList<>();
         for (String memCacheString : list) {
-            System.out.println("item = " + memCacheString);
-            result.add(Arrays.stream(memCacheString.split(","))
+
+            System.out.println("item = " + memCacheString.replace("\"", ""));
+            result.add(Arrays.stream(memCacheString.replace("\"", "").split(","))
                     .map(s -> s.split(":"))
                     .mapToDouble(a-> Double.parseDouble(a[1]))
                     .average()
